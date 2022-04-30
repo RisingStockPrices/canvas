@@ -1,0 +1,47 @@
+
+<canvas width="800" height="800"
+style="background: url('../static/test.jpg');
+background-size:auto
+"></canvas>
+<br>
+<button style="text-align: center;">Finish</button>
+<p id="results"></p>
+<script>
+var canvas = document.querySelector('canvas')
+var ctx = canvas.getContext('2d')
+// ctx.lineWidth = %d
+var button = document.querySelector('button')
+var results = document.querySelector('p')
+
+var keypoints = []
+var mouse = {x: 0, y: 0}
+function getMousePos(canvas, evt) {
+  var rect = canvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+  };
+}
+// canvas.addEventListener('mousemove', function(e) {
+//   mouse.x = e.pageX - this.offsetLeft
+//   mouse.y = e.pageY - this.offsetTop
+// })
+canvas.onmousedown = (event)=>{
+    mouse =  getMousePos(canvas,event)
+    // console.log('hi')
+    ctx.fillRect(mouse.x, mouse.y,3,3); // fill in the pixel 
+    results.innerHTML += mouse.x + "\t" +mouse.y + "<br>"
+}
+canvas.onmouseup = ()=>{
+  canvas.removeEventListener('mousemove', onPaint)
+}
+var onPaint = ()=>{
+  ctx.lineTo(mouse.x, mouse.y)
+  ctx.stroke()
+}
+var data = new Promise(resolve=>{
+  button.onclick = ()=>{
+    resolve(canvas.toDataURL('image/png'))
+  }
+})
+</script>
